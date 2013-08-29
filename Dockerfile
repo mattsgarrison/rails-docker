@@ -17,7 +17,7 @@ RUN apt-get -y install build-essential git zsh
 RUN apt-get install -y -q ruby1.9.1 ruby1.9.1-dev rubygems1.9.1 irb1.9.1 build-essential libopenssl-ruby1.9.1 libssl-dev zlib1g-dev
 
 ## For execjs - needs node
-RUN apt-get install -y python-software-properties python python-setuptools ruby rubygems
+RUN apt-get install -y python-software-properties python python-setuptools 
 RUN add-apt-repository ppa:chris-lea/node.js
 RUN echo "deb http://us.archive.ubuntu.com/ubuntu/ precise universe" >> /etc/apt/sources.list
 RUN apt-get update
@@ -49,13 +49,14 @@ RUN apt-get install -y nodejs
 
 
 ## RAILS
-#RUN gem install rails --no-ri --no-rdoc
-#RUN gem install passenger
+RUN gem install rails --no-ri --no-rdoc
+RUN gem install passenger
 ## RAILS APP
 #ADD ./docker-rails /srv/docker-rails
-#RUN git clone git@github.com:IconoclastLabs/teamweb.git /srv/teamweb-rails
-#RUN cd /srv/teamweb-rails;bundle install
-#EXPOSE 3000
+RUN git clone https://github.com/IconoclastLabs/teamweb.git
+# git@github.com:IconoclastLabs/teamweb.git /srv/teamweb-rails
+RUN cd /srv/teamweb-rails;bundle install
+EXPOSE 3000
 
 #RUN easy_install supervisor
 #RUN echo_supervisord_conf > /etc/supervisord.conf
@@ -64,4 +65,4 @@ RUN apt-get install -y nodejs
 #CMD ["/usr/local/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
 CMD ["/bin/bash/"]
 
-#CMD ["/srv/teamweb-rails/script/rails server"]
+CMD ["/srv/teamweb-rails/script/rails server"]
