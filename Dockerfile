@@ -4,6 +4,7 @@ FROM ubuntu
 
 RUN apt-get update
 
+RUN apt-get install -y vim
 ## MYSQL
 #RUN apt-get install -y -q mysql-client libmysqlclient-dev 
 
@@ -11,9 +12,8 @@ RUN apt-get update
 
 RUN apt-get install -y -q postgresql-9.1
 RUN apt-get install -y -q libpq-dev
-
 ## RUBY
-RUN apt-get -y install build-essential git zsh
+RUN apt-get -y install build-essential git zsh curl wget
 RUN apt-get install -y -q ruby1.9.1 ruby1.9.1-dev rubygems1.9.1 irb1.9.1 build-essential libopenssl-ruby1.9.1 libssl-dev zlib1g-dev
 
 ## For execjs - needs node
@@ -22,41 +22,25 @@ RUN add-apt-repository ppa:chris-lea/node.js
 RUN echo "deb http://us.archive.ubuntu.com/ubuntu/ precise universe" >> /etc/apt/sources.list
 RUN apt-get update
 RUN apt-get install -y nodejs
-# Install git
 
-## RBENV
-# Install rbenv
-#RUN git clone https://github.com/sstephenson/rbenv.git /usr/local/rbenv
-#RUN echo '# rbenv setup' > /etc/profile.d/rbenv.sh
-#RUN echo 'export RBENV_ROOT=/usr/local/rbenv' >> /etc/profile.d/rbenv.sh
-#RUN echo 'export PATH="$RBENV_ROOT/bin:$PATH"' >> /etc/profile.d/rbenv.sh
-#RUN echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh
-#RUN chmod +x /etc/profile.d/rbenv.sh
- 
-# install ruby-build
-#RUN mkdir /usr/local/rbenv/plugins
-#RUN git clone https://github.com/sstephenson/ruby-build.git /usr/local/rbenv/plugins/ruby-build
- 
-#ENV RBENV_ROOT /usr/local/rbenv
- 
-#ENV PATH "$RBENV_ROOT/bin:$RBENV_ROOT/shims:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-# does not work. PATH is set to
-# $RBENV_ROOT/shims:$RBENV_ROOT/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
- 
-# install ruby2
-#RUN sudo /usr/local/rbenv/bin/rbenv install 2.0.0-p247
-#RUN sudo /usr/local/rbenv/bin/rbenv global 2.0.0-p247
 
+## Install an updated Ruby
+RUN apt-get install -y libyaml-dev ncurses-dev libreadline-dev bison libgdbm-dev libc6-dev libssl-dev libsqlite3-dev make build-essential libssl-dev libreadline6-dev zlib1g-dev libyaml-dev libreadline-ruby libopenssl-ruby libcurl4-openssl-dev libxml2-dev libxslt1-dev libpq-dev gcc
+
+RUN cd /tmp;wget ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p247.tar.gz
+RUN cd /tmp;tar zxfv ruby-2.0.0-p247.tar.gz
+
+ADD ./templates/environment /etc/environment
 
 ## RAILS
-RUN gem install rails --no-ri --no-rdoc
-RUN gem install passenger
+#RUN gem install rails --no-ri --no-rdoc
+#RUN gem install passenger bundler
 ## RAILS APP
 #ADD ./docker-rails /srv/docker-rails
-RUN git clone https://github.com/IconoclastLabs/teamweb.git
+#RUN git clone https://github.com/IconoclastLabs/teamweb.git /srv/teamweb-rails
 # git@github.com:IconoclastLabs/teamweb.git /srv/teamweb-rails
-RUN cd /srv/teamweb-rails;bundle install
-EXPOSE 3000
+#RUN cd /srv/teamweb-rails;bundle install
+#EXPOSE 3000
 
 #RUN easy_install supervisor
 #RUN echo_supervisord_conf > /etc/supervisord.conf
@@ -65,4 +49,4 @@ EXPOSE 3000
 #CMD ["/usr/local/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
 CMD ["/bin/bash/"]
 
-CMD ["/srv/teamweb-rails/script/rails server"]
+#CMD ["/srv/teamweb-rails/script/rails server"]

@@ -1,0 +1,4 @@
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:
+/usr/local/lib/ruby/gems/2.0.0:/usr/local/lib/ruby/gems/2.0.0/gems"
+RUBY_GC_MALLOC_LIMIT=90000000
+RAILS_ENV=production
