@@ -11,6 +11,7 @@ RUN apt-get install -y vim aptitude
 ## POSTGRES
 
 RUN apt-get install -y -q postgresql-9.1
+RUN apt-get install -y -q postgresql-contrib-9.1
 RUN apt-get install -y -q libpq-dev
 ## RUBY
 RUN apt-get -y install build-essential git zsh curl wget
@@ -23,6 +24,17 @@ RUN echo "deb http://us.archive.ubuntu.com/ubuntu/ precise universe" >> /etc/apt
 RUN apt-get update
 RUN apt-get install -y nodejs
 
+# SERVICES
+
+## MEMCACHED
+RUN apt-get install -y -q memcached
+
+## REDIS
+RUN apt-get install -y -q redis-server
+## MAGICK
+RUN apt-get install -y -q imagemagick
+RUN apt-get install -y -q graphicsmagick
+RUN apt-get install -y -q graphicsmagick-libmagick-dev-compat
 
 ## Install an updated Ruby
 RUN apt-get install -y libyaml-dev ncurses-dev libreadline-dev bison libgdbm-dev libc6-dev libssl-dev libsqlite3-dev make build-essential libssl-dev libreadline6-dev zlib1g-dev libyaml-dev libreadline-ruby libopenssl-ruby libcurl4-openssl-dev libxml2-dev libxslt1-dev libpq-dev gcc
@@ -43,7 +55,7 @@ RUN git clone https://github.com/IconoclastLabs/teamweb.git /srv/teamweb-rails
 # git@github.com:IconoclastLabs/teamweb.git /srv/teamweb-rails
 RUN cd /srv/teamweb-rails;bundle install
 RUN cd /srv/teamweb-rails;rake db:migrate
-RUN cd /srv/teamweb-rails; passenger start
+#RUN cd /srv/teamweb-rails; passenger start
 EXPOSE 3000
 
 
@@ -54,6 +66,6 @@ EXPOSE 3000
 #RUN printf "[include]\nfiles = /srv/teamweb-rails/Supervisorfile\n" >> /etc/supervisord.conf
 
 #CMD ["/usr/local/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
-CMD ["/bin/bash/"]
+#CMD ["/bin/bash/"]
 
-#CMD ["/srv/teamweb-rails/script/rails server"]
+CMD ["/usr/local/bin/passenger", "start", "/srv/teamweb-rails/"]
