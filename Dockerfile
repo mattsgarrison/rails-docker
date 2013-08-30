@@ -4,7 +4,7 @@ FROM ubuntu
 
 RUN apt-get update
 
-RUN apt-get install -y vim
+RUN apt-get install -y vim aptitude
 ## MYSQL
 #RUN apt-get install -y -q mysql-client libmysqlclient-dev 
 
@@ -29,19 +29,26 @@ RUN apt-get install -y libyaml-dev ncurses-dev libreadline-dev bison libgdbm-dev
 
 RUN cd /tmp;wget ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p247.tar.gz
 RUN cd /tmp;tar zxfv ruby-2.0.0-p247.tar.gz
-
+RUN cd /tmp/ruby-2.0.0-p247;./configure --prefix=/usr/local
+RUN cd /tmp/ruby-2.0.0-p247;make
+RUN cd /tmp/ruby-2.0.0-p247;make install
 ADD ./templates/environment /etc/environment
 
 ## RAILS
-#RUN gem install rails --no-ri --no-rdoc
-#RUN gem install passenger bundler
+RUN gem install rails --no-ri --no-rdoc
+RUN gem install passenger bundler
 ## RAILS APP
 #ADD ./docker-rails /srv/docker-rails
-#RUN git clone https://github.com/IconoclastLabs/teamweb.git /srv/teamweb-rails
+RUN git clone https://github.com/IconoclastLabs/teamweb.git /srv/teamweb-rails
 # git@github.com:IconoclastLabs/teamweb.git /srv/teamweb-rails
-#RUN cd /srv/teamweb-rails;bundle install
-#EXPOSE 3000
+RUN cd /srv/teamweb-rails;bundle install
+RUN cd /srv/teamweb-rails;rake db:migrate
+RUN cd /srv/teamweb-rails; passenger start
+EXPOSE 3000
 
+
+# Tell apt to stop automatically updating NGINX
+#RUN aptitude hold nginx-full
 #RUN easy_install supervisor
 #RUN echo_supervisord_conf > /etc/supervisord.conf
 #RUN printf "[include]\nfiles = /srv/teamweb-rails/Supervisorfile\n" >> /etc/supervisord.conf
